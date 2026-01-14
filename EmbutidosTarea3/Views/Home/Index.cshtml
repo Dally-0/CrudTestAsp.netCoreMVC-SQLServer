@@ -1,0 +1,145 @@
+﻿@model EmbutidosTarea3.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Panel de Control";
+}
+
+<div class="container py-4">
+
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-vino">
+            <i class="fa-solid fa-bacon"></i> Embutidos y Carnes
+        </h1>
+        
+    </div>
+
+    <div class="card shadow border-0 rounded-4 mb-5">
+        <div class="card-header bg-vino text-white d-flex justify-content-between align-items-center p-4 rounded-top-4">
+            <h3 class="m-0 fw-bold"><i class="fa-solid fa-tags me-2"></i>Categorías</h3>
+            <button onclick="cargarFormulario('/Categorias/Create', 'contenedor-form-categoria')"
+                    class="btn btn-light text-danger fw-bold rounded-pill px-4 shadow-sm">
+                <i class="fa-solid fa-plus"></i> Nueva
+            </button>
+        </div>
+
+        <div class="card-body p-4 bg-light rounded-bottom-4">
+
+            <div id="contenedor-form-categoria" class="oculto mb-4 p-4 bg-white border border-danger border-opacity-25 rounded-4 shadow-sm"></div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle rounded-3 overflow-hidden">
+                    <thead class="bg-vino text-white small text-uppercase">
+                        <tr>
+                            <th scope="col" class="ps-4">Nombre</th>
+                            <th scope="col">Descripción</th>
+                            <th scope="col" class="text-end pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Categorias)
+                        {
+                            <tr>
+                                <td class="fw-bold text-vino ps-4">@item.Nombre</td>
+                                <td class="text-muted">@item.Descripcion</td>
+                                <td class="text-end pe-4">
+                                    <button onclick="cargarFormulario('/Categorias/Edit/@item.IdCategoria', 'contenedor-form-categoria')"
+                                            class="btn btn-sm btn-warning rounded-pill px-3 text-white fw-bold shadow-sm">
+                                        Editar
+                                    </button>
+                                    <button onclick="cargarFormulario('/Categorias/Delete/@item.IdCategoria', 'contenedor-form-categoria')"
+                                            class="btn btn-sm btn-dark rounded-pill px-3 shadow-sm">
+                                        Borrar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center p-4 rounded-top-4">
+            <h3 class="m-0 fw-bold"><i class="fa-solid fa-drumstick-bite me-2"></i>Productos</h3>
+            <button onclick="cargarFormulario('/Productos/Create', 'contenedor-form-producto')"
+                    class="btn btn-light text-danger fw-bold rounded-pill px-4 shadow-sm">
+                <i class="fa-solid fa-plus"></i> Nuevo
+            </button>
+        </div>
+
+        <div class="card-body p-4 bg-light rounded-bottom-4">
+
+            <div id="contenedor-form-producto" class="oculto mb-4 p-4 bg-white border border-danger border-opacity-25 rounded-4 shadow-sm"></div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle rounded-3 overflow-hidden">
+                    <thead class="bg-danger text-white small text-uppercase">
+                        <tr>
+                            <th class="ps-4">Producto</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Categoría</th>
+                            <th class="text-end pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Productos)
+                        {
+                            <tr>
+                                <td class="fw-bold text-dark ps-4">@item.Nombre</td>
+                                <td>
+                                    <span class="badge rounded-pill bg-success px-3 py-2">
+                                        @item.Precio Bs.
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (item.Stock < 10)
+                                    {
+                                        <span class="text-danger fw-bold">
+                                            <i class="fa-solid fa-triangle-exclamation"></i> @item.Stock
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-dark">@item.Stock</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge rounded-pill bg-secondary bg-opacity-25 text-dark border">
+                                        @(item.Categoria?.Nombre ?? "Sin Cat.")
+                                    </span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <button onclick="cargarFormulario('/Productos/Edit/@item.IdProducto', 'contenedor-form-producto')"
+                                            class="btn btn-sm btn-warning rounded-pill px-3 text-white fw-bold shadow-sm">
+                                        Editar
+                                    </button>
+                                    <button onclick="cargarFormulario('/Productos/Delete/@item.IdProducto', 'contenedor-form-producto')"
+                                            class="btn btn-sm btn-dark rounded-pill px-3 shadow-sm">
+                                        Borrar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function cargarFormulario(url, contenedorId) {
+            var contenedor = $("#" + contenedorId);
+
+            contenedor.slideUp(200, function() {
+                $.get(url, function(response) {
+                    contenedor.html(response);
+                    contenedor.slideDown(400);
+                });
+            });
+        }
+    </script>
+}
